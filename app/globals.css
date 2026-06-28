@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 30 15% 12%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 10% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 30 8% 96%;
+    --muted-foreground: 30 5% 42%;
+    --accent: 30 15% 95%;
+    --accent-foreground: 30 15% 12%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 30 8% 92%;
+    --input: 30 8% 92%;
+    --ring: 30 15% 12%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-800;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: #292524;
+    color: #fff;
+  }
+}
+
+@layer utilities {
+  .font-serif-display {
+    font-family: var(--font-playfair), 'Georgia', serif;
+  }
+
+  .font-sans-body {
+    font-family: var(--font-inter), system-ui, sans-serif;
+  }
+
+  .section-divider {
+    @apply border-t border-stone-200/50;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fafaf9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
+
+@layer utilities {
+  .container-elegant {
+    @apply max-w-7xl mx-auto px-6 md:px-10;
+  }
+  
+  .heading-display {
+    @apply font-serif text-stone-900 tracking-tight;
+  }
+  
+  .text-muted-refined {
+    @apply text-stone-500 leading-relaxed;
+  }
+}
