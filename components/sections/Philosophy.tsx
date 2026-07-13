@@ -38,8 +38,8 @@ export default function Philosophy({ pageData }: PhilosophyProps) {
     : 'Dostępnych zabiegów';
 
   return (
-    <section className="py-16 sm:py-24 md:py-32 bg-white overflow-hidden" data-section="philosophy">
-      <div ref={ref} className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
+    <section className="py-14 sm:py-20 md:py-24 lg:py-32 bg-white overflow-hidden" data-section="philosophy">
+      <div ref={ref} className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-24 items-center">
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -49,9 +49,10 @@ export default function Philosophy({ pageData }: PhilosophyProps) {
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
               <Image
-                src="https://images.pexels.com/photos/3998000/pexels-photo-3998000.jpeg?auto=compress&cs=tinysrgb&w=900"
-                alt="Zabieg na twarz w Valiente"
+                src="/demo servicios/nasza-filozofia.jpg"
+                alt="Beauty By Nat — filozofia studia: naturalne piękno i indywidualne podejście"
                 fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="object-cover"
               />
             </div>
@@ -79,7 +80,7 @@ export default function Philosophy({ pageData }: PhilosophyProps) {
               Każda wizyta to chwila tylko dla Ciebie
             </h2>
             <p className="text-base sm:text-lg text-stone-600 leading-relaxed mb-6 sm:mb-8" data-cms-role="description">
-              W Valiente tworzymy spersonalizowane protokoły, które szanują Twoją naturalność i podkreślają Twoje piękno. Setki osób wybierają nas co roku dzięki efektom i indywidualnemu podejściu.
+              W Beauty By Nat każda wizyta jest spersonalizowana. Szanuję Twoją naturalność i podkreślam to, co w Tobie najpiękniejsze. Setki kobiet wybierają mnie co roku dzięki efektom WOW bez przerysowania i indywidualnemu podejściu.
             </p>
 
             <div className="space-y-3 sm:space-y-4">

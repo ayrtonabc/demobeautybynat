@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { fetchPageData, getBlogPosts } from '@/lib/cms';
 
@@ -9,53 +10,64 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await fetchPageData('/blog', 'es');
 
   return {
-    title: 'Blog | Valiente Studio Urody',
-    description: 'Porady dotyczące pielęgnacji, trendy w estetyce i zabiegi podkreślające naturalne piękno.',
+    title: 'Blog | Beauty By Nat',
+    description: 'Porady o przedłużaniu rzęs, laminacji brwi, fryzurach okolicznościowych i makijażu. Praktyczne tipy od Natalii Dominiak.',
   };
+}
+
+// Helper: convierte un título en un slug URL-safe
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/ł/g, 'l')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
 const defaultArticles = [
   {
-    title: 'Jak dbać o skórę w każdej porze roku',
-    excerpt: 'Zmiany temperatury wpływają na naszą skórę na różne sposoby. Dzielimy się sekretami, by przez cały rok wyglądała promiennie.',
-    image: 'https://images.pexels.com/photos/3764013/pexels-photo-3764013.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '15 maja 2026',
-    category: 'Pielęgnacja skóry',
+    title: 'Jak dbać o przedłużane rzęsy — 7 zasad',
+    excerpt: 'Przedłużane rzęsy mogą wyglądać pięknie nawet 4–5 tygodni. Wystarczy trzymać się kilku prostych zasad pielęgnacji.',
+    image: '/demo servicios/extensiones-pestanas-1.jpg',
+    date: '20 maja 2026',
+    category: 'Pielęgnacja rzęs',
   },
   {
-    title: 'Wszystko, co musisz wiedzieć o laminacji rzęs',
-    excerpt: 'Laminacja rzęs to jeden z najczęściej wybieranych zabiegów. Sprawdź, jak działa i jakich efektów możesz oczekiwać.',
-    image: 'https://images.pexels.com/photos/4046316/pexels-photo-4046316.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '28 kwietnia 2026',
-    category: 'Zabiegi',
+    title: 'Klasyka, Volume czy Kim Kardashian — którą metodę wybrać?',
+    excerpt: 'Każdy typ oka lubi coś innego. Podpowiadam, jak dobrać metodę przedłużania do kształtu, stylu i okazji.',
+    image: '/demo servicios/volume-light-medium-mega.jpg',
+    date: '5 maja 2026',
+    category: 'Rzęsy',
   },
   {
-    title: 'Mikronakłuwanie: sekret odnowionej skóry',
-    excerpt: 'Ten zabieg naturalnie stymuluje produkcję kolagenu. Opowiadamy o wszystkich jego korzyściach.',
-    image: 'https://images.pexels.com/photos/3764568/pexels-photo-3764568.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '10 kwietnia 2026',
-    category: 'Zabiegi',
+    title: 'Laminacja brwi krok po kroku — co warto wiedzieć',
+    excerpt: 'Laminacja to nie tylko podkręcenie włosków. To także odżywienie i ułożenie ich w jednym, spójnym kierunku.',
+    image: '/demo servicios/laminacja-i-geometria-brwi.jpg',
+    date: '18 kwietnia 2026',
+    category: 'Brwi',
   },
   {
-    title: 'Rutyna pielęgnacyjna dopasowana do typu skóry',
-    excerpt: 'Nie każda skóra jest taka sama. Naucz się rozpoznawać swoją i zbuduj skuteczną rutynę.',
-    image: 'https://images.pexels.com/photos/3985329/pexels-photo-3985329.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '22 marca 2026',
-    category: 'Pielęgnacja skóry',
+    title: 'Fryzura na wesele — jak przygotować włosy',
+    excerpt: 'Kilka prostych kroków przed wizytą sprawi, że fryzura będzie trwalsza i będzie wyglądać jeszcze lepiej.',
+    image: '/demo servicios/fryzury-okolicznosciowe.jpg',
+    date: '2 kwietnia 2026',
+    category: 'Fryzury',
   },
   {
-    title: 'Trendy w makijażu na ten sezon',
-    excerpt: 'Od naturalnych looków po odważniejsze stylizacje. Trendy, które teraz królują.',
-    image: 'https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '5 marca 2026',
+    title: 'Makijaż na sesję zdjęciową — co się zmienia',
+    excerpt: 'Inny makijaż na co dzień, inny na sesję. Podpowiadam, jak przygotować cerę i oczy przed obiektywem.',
+    image: '/demo servicios/makijaz-okolicznosciowy.jpg',
+    date: '15 marca 2026',
     category: 'Makijaż',
   },
   {
-    title: 'Korzyści głębokiego oczyszczania twarzy',
-    excerpt: 'Profesjonalne oczyszczanie to nie tylko kwestia estetyki, ale realna korzyść dla zdrowia skóry.',
-    image: 'https://images.pexels.com/photos/3997993/pexels-photo-3997993.jpeg?auto=compress&cs=tinysrgb&w=800',
-    date: '18 lutego 2026',
-    category: 'Zabiegi',
+    title: 'Efekt Eyeliner — komu pasuje i jak go nosić',
+    excerpt: 'Jeśli marzysz o mocnym, graficznym spojrzeniu bez codziennego rysowania kreski — Efekt Eyeliner jest dla Ciebie.',
+    image: '/demo servicios/efekt-kim-kardashian-eyeliner.jpg',
+    date: '1 marca 2026',
+    category: 'Rzęsy',
   },
 ];
 
@@ -65,23 +77,25 @@ export default async function BlogPage() {
     getBlogPosts('es', 20),
   ]);
 
-  const articles = blogPosts.length > 0
+  const articles = (blogPosts.length > 0
     ? blogPosts.map((p: any) => ({
         title: p.title,
         excerpt: p.excerpt || p.description || '',
         image: p.image_url || '',
         date: p.created_at ? new Date(p.created_at).toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' }) : '',
         category: p.category || 'Ogólne',
+        slug: p.slug || slugify(p.title),
       }))
-    : defaultArticles;
+    : defaultArticles
+  ).map((a: any) => ({ ...a, slug: a.slug || slugify(a.title) }));
 
-  const pageTitle = pageData.content.find(c => c.section_key === 'page_title')?.content_value || 'Porady i trendy';
-  const pageDescription = pageData.content.find(c => c.section_key === 'page_description')?.content_value || 'Informacje o pielęgnacji, zabiegach estetycznych i wszystkim, co warto wiedzieć, by dbać o skórę.';
+  const pageTitle = pageData.content.find(c => c.section_key === 'page_title')?.content_value || 'Porady i inspiracje';
+  const pageDescription = pageData.content.find(c => c.section_key === 'page_description')?.content_value || 'Wszystko o przedłużaniu rzęs, laminacji brwi, fryzurach okolicznościowych i makijażu. Praktyczne tipy i historie z gabinetu.';
 
   return (
     <>
-      <section className="pt-28 sm:pt-32 pb-12 sm:pb-16 bg-stone-50">
-        <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
+      <section className="pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-10 sm:pb-12 md:pb-16 bg-stone-50">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10">
           <p className="text-xs sm:text-sm font-medium tracking-widest text-stone-500 uppercase mb-3 sm:mb-4">Blog</p>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif text-stone-900 mb-4 sm:mb-6" data-cms-section="blog_title">
             {pageTitle}
@@ -95,35 +109,39 @@ export default async function BlogPage() {
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-            {articles.map((article, index) => (
-              <article
+            {articles.map((article: any, index) => (
+              <Link
                 key={index}
-                className="group cursor-pointer"
+                href={`/blog/${article.slug}`}
+                className="group block"
               >
-                <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl mb-4 sm:mb-6">
-                  <Image
-                    src={article.image}
-                    alt={article.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs font-medium text-rose-500 bg-rose-50 px-3 py-1 rounded-full">
-                    {article.category}
-                  </span>
-                  <span className="text-xs text-stone-400">{article.date}</span>
-                </div>
-                <h2 className="text-lg sm:text-xl font-serif text-stone-900 mb-2 group-hover:text-rose-600 transition-colors">
-                  {article.title}
-                </h2>
-                <p className="text-sm text-stone-600 leading-relaxed line-clamp-2">
-                  {article.excerpt}
-                </p>
-                <div className="flex items-center gap-2 mt-4 text-sm font-medium text-stone-900 group-hover:text-rose-600 transition-colors">
-                  Czytaj więcej <ArrowRight className="w-4 h-4" />
-                </div>
-              </article>
+                <article>
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl sm:rounded-2xl mb-4 sm:mb-6">
+                    <Image
+                      src={article.image}
+                      alt={article.title}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-xs font-medium text-rose-500 bg-rose-50 px-3 py-1 rounded-full">
+                      {article.category}
+                    </span>
+                    <span className="text-xs text-stone-400">{article.date}</span>
+                  </div>
+                  <h2 className="text-lg sm:text-xl font-serif text-stone-900 mb-2 group-hover:text-rose-600 transition-colors">
+                    {article.title}
+                  </h2>
+                  <p className="text-sm text-stone-600 leading-relaxed line-clamp-2">
+                    {article.excerpt}
+                  </p>
+                  <div className="flex items-center gap-2 mt-4 text-sm font-medium text-stone-900 group-hover:text-rose-600 transition-colors">
+                    Czytaj więcej <ArrowRight className="w-4 h-4" />
+                  </div>
+                </article>
+              </Link>
             ))}
           </div>
         </div>

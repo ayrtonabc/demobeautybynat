@@ -1,190 +1,125 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Gift, Heart, Sparkles, CreditCard } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Gift, Heart, Sparkles, CreditCard, ArrowRight } from 'lucide-react';
 import type { PageData } from '@/lib/cms';
 
 interface GiftCardProps {
   pageData?: PageData;
 }
 
-const services = [
-  'Oczyszczanie głębokie Premium',
-  'Mikrodermabrazja diamentowa',
-  'Mikronakłuwanie z egzosomami',
-  'Terapia anti-aging',
-  'Laminacja rzęs + odżywienie',
-  'Laminacja brwi + botoks',
-  'Microblading / mikropigmentacja',
-  'Makijaż ślubny',
-  'Makijaż wieczorowy',
-  'Masaż relaksacyjny',
-  'Masaż gorącymi kamieniami',
-  'Manicure hybrydowy',
-  'Inne (zapytaj)',
+const steps = [
+  { icon: Heart, text: 'Wybierz kwotę lub konkretny zabieg' },
+  { icon: CreditCard, text: 'Digitalna (e-mail) lub fizyczna (odbiór w salonie)' },
+  { icon: Sparkles, text: 'Bezpieczna płatność i natychmiastowe potwierdzenie' },
 ];
 
+// Imagen del voucher
+const giftImage = '/demo servicios/voucher.jpg';
+
 export default function GiftCard({ pageData }: GiftCardProps) {
-  const [formData, setFormData] = useState({
-    nombreComprador: '',
-    telefonoComprador: '',
-    nombreDestinatario: '',
-    servicio: '',
-  });
-  const [loading, setLoading] = useState(false);
-
   const title = pageData
-    ? pageData.content.find(c => c.section_key === 'gift_title')?.content_value || 'Podaruj chwilę relaksu'
-    : 'Podaruj chwilę relaksu';
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/giftcard', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Coś poszło nie tak. Spróbuj ponownie.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    ? pageData.content.find(c => c.section_key === 'gift_title')?.content_value || 'Podaruj chwilę piękna'
+    : 'Podaruj chwilę piękna';
 
   return (
-    <section className="py-16 sm:py-20 bg-gradient-to-b from-rose-50 to-white" data-section="gift">
-      <div className="max-w-6xl mx-auto px-6 sm:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-8 sm:mb-10"
-        >
-          <div className="inline-flex items-center gap-2 bg-rose-100 text-rose-600 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
-            <Gift className="w-3 h-3 sm:w-4 sm:h-4" />
-            Gift Card
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-stone-900 mb-2 sm:mb-3" data-cms-role="title">
-            {title}
-          </h2>
-          <p className="text-sm sm:text-base text-stone-600 max-w-lg mx-auto px-4">
-            Idealny prezent dla wyjątkowej osoby. To znacznie więcej niż podarunek — to chwila czystego relaksu.
-          </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
+    <section className="relative bg-stone-50 overflow-hidden" data-section="gift">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-6 md:px-10 lg:px-10 py-16 sm:py-20 md:py-24 lg:py-28">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-6 sm:gap-8 lg:gap-12 xl:gap-16">
+          {/* ───── COLUMNA IZQUIERDA: IMAGEN ───── */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 1.04 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl shadow-lg p-6 sm:p-8"
+            transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:flex-shrink-0 w-full sm:w-[460px] lg:w-[400px] xl:w-[440px] order-2 lg:order-1"
           >
-            <h3 className="text-lg sm:text-xl font-serif text-stone-900 mb-4 sm:mb-6">Jak to działa?</h3>
-            <div className="space-y-3 sm:space-y-4">
-              {[
-                { icon: Heart, text: 'Wybierz zabieg, który najbardziej spodoba się obdarowanej osobie' },
-                { icon: CreditCard, text: 'Zapłać bezpiecznie kartą lub przelewem' },
-                { icon: Sparkles, text: 'Otrzymaj Gift Card na e-mail w kilka sekund' },
-              ].map(({ icon: Icon, text }, i) => (
-                <div key={i} className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-rose-50 rounded-xl flex items-center justify-center shrink-0">
-                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500" />
-                  </div>
-                  <p className="text-sm sm:text-base text-stone-600">{text}</p>
-                </div>
-              ))}
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone-200">
+              <Image
+                src={giftImage}
+                alt="Voucher Gift Card Beauty By Nat"
+                fill
+                sizes="(min-width: 1280px) 440px, (min-width: 1024px) 400px, (min-width: 640px) 460px, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute top-3 left-3 w-6 h-px bg-white/70" />
+              <div className="absolute top-3 left-3 h-6 w-px bg-white/70" />
+              <div className="absolute bottom-3 right-3 w-6 h-px bg-white/70" />
+              <div className="absolute bottom-3 right-3 h-6 w-px bg-white/70" />
             </div>
           </motion.div>
 
-          <motion.form
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            onSubmit={handleSubmit}
-            className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-4 sm:space-y-5"
-          >
-            <h3 className="text-lg sm:text-xl font-serif text-stone-900 mb-4 sm:mb-6">Zamów Gift Card</h3>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-stone-700 mb-1.5 sm:mb-2">
-                Twoje imię
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.nombreComprador}
-                onChange={(e) => setFormData({ ...formData, nombreComprador: e.target.value })}
-                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-stone-200 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 outline-none transition-all text-sm"
-                placeholder="Twoje imię i nazwisko"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-stone-700 mb-1.5 sm:mb-2">
-                Twój telefon / WhatsApp
-              </label>
-              <input
-                type="tel"
-                required
-                value={formData.telefonoComprador}
-                onChange={(e) => setFormData({ ...formData, telefonoComprador: e.target.value })}
-                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-stone-200 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 outline-none transition-all text-sm"
-                placeholder="+48 XXX XXX XXX"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-stone-700 mb-1.5 sm:mb-2">
-                Imię osoby obdarowanej
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.nombreDestinatario}
-                onChange={(e) => setFormData({ ...formData, nombreDestinatario: e.target.value })}
-                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-stone-200 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 outline-none transition-all text-sm"
-                placeholder="Imię osoby, która otrzyma prezent"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-stone-700 mb-1.5 sm:mb-2">
-                Wybrany zabieg
-              </label>
-              <select
-                required
-                value={formData.servicio}
-                onChange={(e) => setFormData({ ...formData, servicio: e.target.value })}
-                className="w-full px-3 py-2.5 sm:px-4 sm:py-3 rounded-xl border border-stone-200 focus:border-rose-300 focus:ring-2 focus:ring-rose-100 outline-none transition-all bg-white text-sm"
-              >
-                <option value="">Wybierz zabieg</option>
-                {services.map((service) => (
-                  <option key={service} value={service}>{service}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-stone-900 text-white py-3 sm:py-4 rounded-xl font-medium hover:bg-stone-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+          {/* ───── COLUMNA DERECHA: TEXTO ───── */}
+          <div className="lg:flex-1 lg:max-w-[520px] order-1 lg:order-2">
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className="text-[11px] uppercase tracking-[0.22em] sm:tracking-[0.28em] text-stone-500 mb-5 sm:mb-7 md:mb-9"
             >
-              {loading ? 'Przetwarzanie...' : 'Przejdź do płatności'}
-            </button>
-          </motion.form>
+              Gift Card Beauty By Nat
+            </motion.p>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="font-serif text-stone-900 leading-[1.05] tracking-[-0.02em] text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] xl:text-[64px] mb-5 sm:mb-6 md:mb-8"
+              data-cms-role="title"
+            >
+              {title}
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="text-[15px] sm:text-base text-stone-600 leading-[1.6] sm:leading-[1.65] max-w-[42ch] mb-6 sm:mb-8 md:mb-10"
+            >
+              Idealny prezent dla wyjątkowej osoby. Voucher na konkretny zabieg lub otwartą kwotę — digitalny lub fizyczny z odbiorem w salonie.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="space-y-3 sm:space-y-4 mb-7 sm:mb-8 md:mb-10"
+            >
+              {steps.map(({ icon: Icon, text }, i) => (
+                <div key={i} className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-stone-700" strokeWidth={1.5} />
+                  </div>
+                  <p className="text-sm sm:text-base text-stone-700 leading-relaxed pt-1.5">{text}</p>
+                </div>
+              ))}
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link
+                href="/giftcard"
+                className="group inline-flex items-center gap-2.5 bg-stone-900 text-white pl-6 pr-5 py-3.5 rounded-full text-sm font-medium tracking-wide hover:bg-stone-800 transition-colors duration-300"
+              >
+                Zamów Gift Card
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" strokeWidth={1.5} />
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
+
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-stone-200" />
     </section>
   );
 }

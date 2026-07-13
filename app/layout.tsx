@@ -19,40 +19,40 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: 'Valiente Studio Urody | Premium Beauty & Estetyka w Warszawie',
+  title: 'Beauty By Nat · Natalia Dominiak | Rzęsy, brwi, fryzury i makijaż w Rokietnicy',
   description:
-    'Valiente — kameralne studio urody w Warszawie. Profesjonalne zabiegi pielęgnacyjne dla kobiet i mężczyzn: oczyszczanie twarzy, mikronakłuwanie, laminacja rzęs, makijaż, masaże i więcej.',
+    'Beauty By Nat — studio urody Natalii Dominiak w Rokietnicy k. Poznania. Przedłużanie i stylizacja rzęs, laminacja i geometria brwi, fryzury okolicznościowe oraz makijaż na wydarzenia. Efekt WOW bez przerysowania.',
   keywords:
-    'studio urody Warszawa, estetyka Warszawa, beauty premium, zabiegi na twarz, mikronakłuwanie, laminacja rzęs, laminacja brwi, makijaż, masaże, oczyszczanie twarzy, mikropigmentacja',
-  authors: [{ name: 'Valiente Studio Urody' }],
-  creator: 'Valiente Studio Urody',
-  publisher: 'Valiente Studio Urody',
-  metadataBase: new URL('https://valientebelleza.com.pl'),
+    'rzęsy Rokietnica, przedłużanie rzęs Poznań, laminacja brwi Rokietnica, fryzury okolicznościowe Poznań, makijaż okolicznościowy Rokietnica, Beauty By Nat, Natalia Dominiak, salon urody Rokietnica',
+  authors: [{ name: 'Beauty By Nat - Natalia Dominiak' }],
+  creator: 'Beauty By Nat - Natalia Dominiak',
+  publisher: 'Beauty By Nat - Natalia Dominiak',
+  metadataBase: new URL('https://beautybynat.pl'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'pl_PL',
-    url: 'https://valientebelleza.com.pl',
-    title: 'Valiente Studio Urody | Premium Beauty & Estetyka w Warszawie',
+    url: 'https://beautybynat.pl',
+    title: 'Beauty By Nat · Natalia Dominiak | Rzęsy, brwi, fryzury i makijaż w Rokietnicy',
     description:
-      'Kameralne studio urody w Warszawie. Profesjonalne zabiegi pielęgnacyjne dla kobiet i mężczyzn.',
-    siteName: 'Valiente Studio Urody',
+      'Studio urody w Rokietnicy k. Poznania. Przedłużanie rzęs, stylizacja brwi, fryzury okolicznościowe i makijaż.',
+    siteName: 'Beauty By Nat',
     images: [
       {
-        url: '/logovaliente.webp',
+        url: '/logo.webp',
         width: 1200,
         height: 630,
-        alt: 'Valiente Studio Urody',
+        alt: 'Beauty By Nat - Natalia Dominiak',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Valiente Studio Urody | Premium Beauty & Estetyka w Warszawie',
-    description: 'Kameralne studio urody w Warszawie. Profesjonalne zabiegi pielęgnacyjne dla kobiet i mężczyzn.',
-    images: ['/logovaliente.webp'],
+    title: 'Beauty By Nat · Natalia Dominiak | Rzęsy, brwi, fryzury i makijaż w Rokietnicy',
+    description: 'Studio urody w Rokietnicy k. Poznania. Przedłużanie rzęs, stylizacja brwi, fryzury okolicznościowe i makijaż.',
+    images: ['/logo.webp'],
   },
   robots: {
     index: true,

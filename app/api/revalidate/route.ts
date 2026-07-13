@@ -54,6 +54,6 @@ export async function GET() {
   return NextResponse.json({
     status: 'ok',
     message: 'API de revalidación activa',
-    usage: 'POST con { paths: ["/", "/servicios"], token: "tu-token" }',
+    usage: 'POST con { paths: ["/", "/uslugi"], token: "tu-token" }',
   });
 }

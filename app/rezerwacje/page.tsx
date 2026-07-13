@@ -1,65 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, CheckCircle, CreditCard, Phone } from 'lucide-react';
 
 const serviceCategories = [
   {
-    name: 'Twarz',
+    name: 'Rzęsy',
     services: [
-      { name: 'Oczyszczanie głębokie Premium', price: 500, duration: '1 h 30' },
-      { name: 'Mikrodermabrazja diamentowa', price: 550, duration: '1 h 30' },
-      { name: 'Mikronakłuwanie z egzosomami', price: 700, duration: '1 h 30' },
-      { name: 'Terapia anti-aging: witalność i jędrność', price: 550, duration: '1 h 30' },
-      { name: 'Leczenie przebarwień (melasma)', price: 500, duration: 'Na zapytanie' },
-      { name: 'Osocze bogatopłytkowe (PRP)', price: 1500, duration: '60 min' },
-      { name: 'Mezoterapia', price: 650, duration: '60 min' },
+      { name: 'Konsultacja (pierwsza wizyta rzęsy)', price: 0, duration: '15 min' },
+      { name: 'Przedłużanie rzęs 1:1 (klasyka)', price: 180, duration: '2 h 30' },
+      { name: 'Uzupełnienie 1:1 (do 3 tygodni)', price: 150, duration: '1 h 30' },
+      { name: 'Light Volume', price: 210, duration: '3 h' },
+      { name: 'Uzupełnienie Light Volume', price: 180, duration: '2 h' },
+      { name: 'Medium Volume', price: 230, duration: '3 h' },
+      { name: 'Uzupełnienie Medium Volume', price: 200, duration: '2 h' },
+      { name: 'Mega Volume', price: 240, duration: '3 h' },
+      { name: 'Uzupełnienie Mega Volume', price: 220, duration: '2 h' },
+      { name: 'Wet Effect', price: 230, duration: '3 h' },
+      { name: 'Uzupełnienie Wet Effect', price: 210, duration: '2 h' },
+      { name: 'Kim Kardashian Light', price: 220, duration: '3 h' },
+      { name: 'Uzupełnienie Kim Kardashian Light', price: 190, duration: '2 h' },
+      { name: 'Kim Kardashian Medium', price: 240, duration: '3 h' },
+      { name: 'Uzupełnienie Kim Kardashian Medium', price: 210, duration: '2 h' },
+      { name: 'Efekt Eyeliner', price: 240, duration: '3 h' },
+      { name: 'Uzupełnienie Efekt Eyeliner', price: 210, duration: '2 h' },
+      { name: 'Usunięcie starej aplikacji', price: 50, duration: '30 min' },
+      { name: 'Henna rzęs', price: 30, duration: '20 min' },
     ],
   },
   {
-    name: 'Oczy i brwi',
+    name: 'Brwi',
     services: [
-      { name: 'Laminacja rzęs + odżywienie', price: 350, duration: '60 min' },
-      { name: 'Laminacja brwi + botoks', price: 250, duration: '60 min' },
-      { name: 'Regulacja brwi pęsetą', price: 250, duration: '60 min' },
-      { name: 'Microblading / mikropigmentacja', price: 2200, duration: '2 h 30' },
-      { name: 'Nawilżanie ust', price: 1900, duration: '1 h 30' },
+      { name: 'Henna pudrowa + geometria brwi', price: 110, duration: '60 min' },
+      { name: 'Laminacja brwi', price: 120, duration: '60 min' },
+      { name: 'Laminacja + koloryzacja + geometria', price: 150, duration: '75 min' },
+      { name: 'Henna klasyczna + geometria', price: 50, duration: '45 min' },
+      { name: 'Geometria / regulacja pęsetą', price: 30, duration: '20 min' },
     ],
   },
   {
-    name: 'Manicure i pedicure',
+    name: 'Fryzury',
     services: [
-      { name: 'Manicure hybrydowy', price: 350, duration: '2 godz.' },
-      { name: 'Kapping żelowy', price: 400, duration: '2 godz.' },
-      { name: 'Soft gel', price: 450, duration: '2 godz.' },
+      { name: 'Fryzura okolicznościowa — włosy do ramion', price: 250, duration: 'od 60 min' },
+      { name: 'Fryzura okolicznościowa — włosy długie / z doczepami', price: 300, duration: 'od 90 min' },
     ],
   },
   {
-    name: 'Masaże',
+    name: 'Makijaż',
     services: [
-      { name: 'Gorące kamienie', price: 600, duration: '60 min' },
-      { name: 'Relaksacyjny', price: 700, duration: '90 min' },
-      { name: 'Ulgowy', price: 600, duration: '60 min' },
-      { name: 'Wyciszający', price: 600, duration: '60 min' },
-      { name: 'Miejscowy', price: 450, duration: '45 min' },
-      { name: 'Stopy na ziemi', price: 500, duration: '45 min' },
-      { name: 'Gniazdo (dla kobiet w ciąży)', price: 550, duration: '90 min' },
-      { name: 'Alchemia (Reiki + masaż)', price: 650, duration: '90 min' },
-      { name: 'Drenaż limfatyczny', price: 450, duration: '60 min' },
-      { name: 'Modelujący i ujędrniający', price: 450, duration: '60 min' },
-      { name: 'Odrodzenie', price: 650, duration: '60 min' },
+      { name: 'Makijaż okolicznościowy', price: 250, duration: '60 min' },
     ],
   },
   {
-    name: 'Makijaż okolicznościowy',
+    name: 'Szkolenia',
     services: [
-      { name: 'Pakiet Panna Młoda (komplet)', price: 4500, duration: 'Do uzgodnienia' },
-      { name: 'Pakiet Pan Młody', price: 3500, duration: 'Do uzgodnienia' },
-      { name: 'Makijaż Panny Młodej', price: 2100, duration: 'Na zapytanie' },
-      { name: 'Makijaż Pana Młodego', price: 1900, duration: 'Na zapytanie' },
-      { name: 'Makijaż imprezowy (np. osiemnastka)', price: 1900, duration: 'Na zapytanie' },
-      { name: 'Makijaż dzienny', price: 1500, duration: 'Na zapytanie' },
+      { name: 'Warsztaty automakijażu', price: 400, duration: '3 h' },
+      { name: 'Indywidualna lekcja makijażu', price: 600, duration: '2 h' },
+      { name: 'Warsztaty doczepiania clip-in', price: 400, duration: '1 h 30' },
+      { name: 'Warsztat kucyk / ponytail', price: 300, duration: '1 h 30' },
     ],
   },
 ];
@@ -70,7 +70,10 @@ const timeSlots = [
   '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30',
 ];
 
-export default function BookingPage() {
+function BookingPageInner() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -78,6 +81,32 @@ export default function BookingPage() {
   const [form, setForm] = useState({
     date: '', time: '', name: '', phone: ''
   });
+
+  // Build a flat lookup of all services by name
+  const allServicesByName = useMemo(() => {
+    const map: Record<string, {name: string; price: number; duration: string; category: string}> = {};
+    for (const cat of serviceCategories) {
+      for (const svc of cat.services) {
+        map[svc.name] = { ...svc, category: cat.name };
+      }
+    }
+    return map;
+  }, []);
+
+  // On mount, if ?service= is in the URL and matches a known service,
+  // pre-select it and jump to step 2.
+  useEffect(() => {
+    const requested = searchParams.get('service');
+    if (requested) {
+      const match = allServicesByName[requested];
+      if (match) {
+        setSelectedService({ name: match.name, price: match.price, duration: match.duration });
+        setSelectedCategory(match.category);
+        setStep(2);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -90,6 +119,23 @@ export default function BookingPage() {
     setLoading(true);
 
     try {
+      // Si el servicio es gratuito (precio 0, p.ej. consulta inicial), no pasamos por pago
+      if (selectedService.price === 0) {
+        // Llamada a /api/booking (que no crea payment, solo registra la reserva)
+        await fetch('/api/booking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...form,
+            serviceName: selectedService.name,
+            servicePrice: selectedService.price,
+            serviceDuration: selectedService.duration,
+          }),
+        });
+        setSuccess(true);
+        return;
+      }
+
       const response = await fetch('/api/booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -121,29 +167,29 @@ export default function BookingPage() {
 
   return (
     <>
-      <section className="pt-28 pb-8 bg-gradient-to-br from-stone-50 to-white">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="text-sm font-medium tracking-widest text-stone-500 uppercase">Rezerwacje online</span>
-          <h1 className="text-4xl font-serif text-stone-900 mt-2 mb-4">
+      <section className="pt-20 sm:pt-24 md:pt-28 pb-6 sm:pb-8 bg-gradient-to-br from-stone-50 to-white">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6 text-center">
+          <span className="text-xs sm:text-sm font-medium tracking-widest text-stone-500 uppercase">Rezerwacje online</span>
+          <h1 className="text-3xl sm:text-4xl font-serif text-stone-900 mt-2 mb-3 sm:mb-4">
             Zarezerwuj wizytę
           </h1>
-          <p className="text-stone-600">
+          <p className="text-sm sm:text-base text-stone-600 max-w-2xl mx-auto">
             Wybierz zabieg, zapłać i potwierdź wizytę w kilka sekund.
           </p>
 
-          <div className="flex justify-center gap-6 mt-6 text-sm text-stone-500">
+          <div className="flex justify-center gap-x-5 sm:gap-6 gap-y-2 mt-5 sm:mt-6 text-xs sm:text-sm text-stone-500 flex-wrap">
             {['Bezpieczna płatność', 'Natychmiastowe potwierdzenie', 'Przypomnienie SMS'].map((item, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-rose-500" />
-                {item}
+              <div key={i} className="flex items-center gap-1.5 sm:gap-2">
+                <CheckCircle className="w-4 h-4 text-rose-500 shrink-0" />
+                <span>{item}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-12 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
+      <section className="py-10 sm:py-12 bg-white">
+        <div className="max-w-4xl mx-auto px-5 sm:px-6">
           <div className="mb-8">
             <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
               <motion.div
@@ -213,7 +259,15 @@ export default function BookingPage() {
           {step === 2 && selectedService && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
               <button
-                onClick={() => setStep(1)}
+                onClick={() => {
+                  setStep(1);
+                  setSelectedService(null);
+                  setSelectedCategory(null);
+                  // Limpia el query string de la URL
+                  if (searchParams.get('service')) {
+                    router.replace(pathname, { scroll: false });
+                  }
+                }}
                 className="flex items-center gap-2 text-sm text-stone-500 hover:text-stone-700 mb-6"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -351,8 +405,45 @@ export default function BookingPage() {
               </div>
             </motion.div>
           )}
+
+          {/* Success overlay */}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white border border-stone-200 rounded-2xl p-8 sm:p-10 text-center"
+            >
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-5">
+                <CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-green-500" />
+              </div>
+              <h3 className="font-serif text-2xl sm:text-3xl text-stone-900 mb-2">Wizyta zarezerwowana!</h3>
+              <p className="text-sm sm:text-base text-stone-600 mb-6 max-w-md mx-auto">
+                {selectedService?.price === 0
+                  ? 'Konsultacja została zarezerwowana. Wkrótce skontaktujemy się z Tobą, żeby potwierdzić termin.'
+                  : 'Przetworzyliśmy Twoją płatność i rezerwację. Wkrótce otrzymasz SMS z potwierdzeniem.'}
+              </p>
+              <div className="bg-stone-50 rounded-xl p-4 max-w-sm mx-auto mb-6 text-sm text-left">
+                <p className="font-medium text-stone-900 mb-1">{selectedService?.name}</p>
+                <p className="text-stone-500">{form.date} · {form.time}</p>
+              </div>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 bg-stone-900 text-white px-6 py-2.5 rounded-full text-sm font-medium hover:bg-stone-800 transition-colors"
+              >
+                Wróć na stronę główną
+              </Link>
+            </motion.div>
+          )}
         </div>
       </section>
     </>
+  );
+}
+
+export default function BookingPage() {
+  return (
+    <Suspense fallback={null}>
+      <BookingPageInner />
+    </Suspense>
   );
 }

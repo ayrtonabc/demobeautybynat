@@ -27,7 +27,7 @@ export default function LoadingScreen() {
         transition={{ duration: 0.4 }}
         className="flex flex-col items-center"
       >
-        <Image src="/logovaliente.webp" alt="Valiente" width={100} height={33} className="h-8 w-auto mb-6" />
+        <img src="/logo.webp" alt="Beauty By Nat" className="h-8 w-auto mb-6" />
         <div className="flex gap-1">
           {[0, 1, 2].map((i) => (
             <motion.div

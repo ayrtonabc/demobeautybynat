@@ -15,9 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
     const pageData = await fetchPageData('/', 'es');
 
     return {
-        title: 'Valiente Studio Urody | Premium Beauty & Estetyka w Warszawie',
+        title: 'Beauty By Nat · Natalia Dominiak | Rzęsy, brwi, fryzury i makijaż w Rokietnicy',
         description:
-            'Kameralne studio urody premium w Warszawie. Zabiegi pielęgnacyjne dla kobiet i mężczyzn.',
+            'Beauty By Nat — kameralne studio urody w Rokietnicy k. Poznania. Rzęsy, brwi, fryzury okolicznościowe i makijaż.',
     };
 }
 

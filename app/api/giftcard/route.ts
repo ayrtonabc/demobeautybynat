@@ -2,53 +2,70 @@ import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 const servicePrices: { [key: string]: number } = {
-  'Limpieza Profunda Premium': 50000,
-  'Punta de Diamante': 55000,
-  'Microneedling + Exosomas': 70000,
-  'Terapia Anti-Age': 55000,
-  'Lifting de Pestañas + Nutrición': 35000,
-  'Laminado de Cejas + Botox': 25000,
-  'Microblading / Micropigmentación': 220000,
-  'Maquillaje Novia': 210000,
-  'Maquillaje de Fiesta': 150000,
-  'Masaje Esencial': 70000,
-  'Masaje Piedras Calientes': 60000,
-  'Uñas Semipermanente': 35000,
-  'Otro (consultar)': 0,
+  'Przedłużanie rzęs 1:1 (klasyka)': 18000,
+  'Volume Light / Medium / Mega': 21000,
+  'Efekt Kim Kardashian / Eyeliner': 22000,
+  'Laminacja i geometria brwi': 12000,
+  'Henna pudrowa brwi': 11000,
+  'Fryzura okolicznościowa': 25000,
+  'Makijaż okolicznościowy': 25000,
 };
+
+const PHYSICAL_CARD_FEE = 1500; // 15 zł por tarjeta física + envío a retirar
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    const { 
-      nombreComprador, 
-      emailComprador, 
-      nombreDestinatario, 
+
+    const {
+      nombreComprador,
+      emailComprador,
+      telefonoComprador,
+      nombreDestinatario,
       emailDestinatario,
-      telefonoDestinatario,
       servicio,
-      mensaje 
+      monto,        // monto en centavos (para Gift Card abierta)
+      tipoEntrega,  // 'digital' | 'fisica'
+      mensaje,
     } = body;
 
     const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
-    
+
     if (!accessToken) {
       return NextResponse.json({ error: 'MercadoPago no configurado' }, { status: 500 });
+    }
+
+    // Validar monto
+    let precioCentavos: number;
+    let descripcion: string;
+
+    if (servicio && servicio !== 'open') {
+      // Gift Card de servicio específico
+      const precioServicio = servicePrices[servicio];
+      if (!precioServicio) {
+        return NextResponse.json({ error: 'Servicio no válido' }, { status: 400 });
+      }
+      precioCentavos = precioServicio;
+      descripcion = `Gift Card Beauty By Nat — ${servicio}`;
+    } else if (monto && typeof monto === 'number' && monto >= 5000) {
+      // Gift Card abierta (monto en centavos, mínimo 50 zł)
+      precioCentavos = Math.round(monto);
+      descripcion = `Gift Card Beauty By Nat — Voucher abierto`;
+    } else {
+      return NextResponse.json({ error: 'Selecciona un servicio o un monto válido (mín. 50 zł)' }, { status: 400 });
+    }
+
+    // Sumar fee de tarjeta física
+    if (tipoEntrega === 'fisica') {
+      precioCentavos += PHYSICAL_CARD_FEE;
     }
 
     const client = new MercadoPagoConfig({ accessToken });
     const payment = new Payment(client);
 
-    const precio = servicePrices[servicio] || 0;
-    
-    if (precio === 0) {
-      return NextResponse.json({ error: 'Por favor, seleccioná un servicio válilido o consultá por el precio.' }, { status: 400 });
-    }
-
-    const paymentData = {
-      transaction_amount: precio,
-      description: `Gift Card Valiente - ${servicio}`,
+    const paymentData: any = {
+      transaction_amount: precioCentavos / 100, // MercadoPago espera en pesos
+      description: descripcion,
       payment_method_id: 'mercadopago',
       payer: {
         email: emailComprador,
@@ -56,13 +73,16 @@ export async function POST(request: Request) {
         last_name: nombreComprador.split(' ').slice(1).join(' ') || '',
       },
       metadata: {
+        tipo: 'giftcard',
         nombre_destinatario: nombreDestinatario,
         email_destinatario: emailDestinatario || '',
-        telefono_destinatario: telefonoDestinatario || '',
-        servicio: servicio,
+        telefono_destinatario: telefonoComprador || '',
+        servicio: servicio || 'open',
+        monto_gift: servicio ? servicePrices[servicio] : monto,
+        tipo_entrega: tipoEntrega,
         mensaje: mensaje || '',
         fecha_compra: new Date().toISOString(),
-        validez: 30,
+        validez: 365, // 1 año
       },
     };
 
@@ -76,7 +96,6 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ error: 'Error al crear el pago' }, { status: 500 });
-
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });

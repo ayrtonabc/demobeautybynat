@@ -8,7 +8,7 @@ export default function FloatingWhatsApp() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[90] flex flex-col items-end gap-3 safe-bottom">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -22,7 +22,7 @@ export default function FloatingWhatsApp() {
               Napisz na WhatsApp, odpowiemy od razu.
             </p>
             <a
-              href="https://wa.me/48226001234?text=Cześć!%20Chciałbym%20dowiedzieć%20się%20więcej."
+              href="https://wa.me/48600000000?text=Cześć!%20Chciałabym%20dowiedzieć%20się%20więcej%20o%20usługach%20Beauty%20By%20Nat."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"

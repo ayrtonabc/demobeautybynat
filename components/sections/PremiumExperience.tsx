@@ -10,10 +10,10 @@ interface PremiumExperienceProps {
 }
 
 const features = [
-  { icon: Shield, title: 'Bezpieczeństwo', desc: 'Rygorystyczne protokoły i kosmetyki premium.' },
-  { icon: Award, title: 'Profesjonalizm', desc: 'Specjalizacje i wieloletnie doświadczenie.' },
-  { icon: Heart, title: 'Indywidualność', desc: 'Plany szyte na miarę każdej osobie.' },
-  { icon: Sparkles, title: 'Technologia', desc: 'Sprzęt i lasery najnowszej generacji.' },
+  { icon: Shield, title: 'Higiena i bezpieczeństwo', desc: 'Jednorazowe materiały, sterylizacja narzędzi i certyfikowane kosmetyki.' },
+  { icon: Award, title: 'Doświadczenie', desc: 'Setki wykonanych aplikacji, szkolenia z najlepszymi markami w branży.' },
+  { icon: Heart, title: 'Indywidualne podejście', desc: 'Dobieram długość, objętość i kształt do Twoich oczu oraz stylu życia.' },
+  { icon: Sparkles, title: 'Naturalny efekt', desc: 'Lubię WOW bez przerysowania — efekt, który wygląda pięknie i zdrowo.' },
 ];
 
 export default function PremiumExperience({ pageData }: PremiumExperienceProps) {
@@ -21,12 +21,12 @@ export default function PremiumExperience({ pageData }: PremiumExperienceProps) 
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
   const title = pageData
-    ? pageData.content.find(c => c.section_key === 'premium_title')?.content_value || 'Doświadczenie Premium'
-    : 'Doświadczenie Premium';
+    ? pageData.content.find(c => c.section_key === 'premium_title')?.content_value || 'Dlaczego Beauty By Nat'
+    : 'Dlaczego Beauty By Nat';
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-stone-50" data-section="premium">
-      <div ref={ref} className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
+    <section className="py-14 sm:py-20 md:py-24 bg-stone-50" data-section="premium">
+      <div ref={ref} className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}

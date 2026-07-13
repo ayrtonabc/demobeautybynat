@@ -30,10 +30,15 @@
 @layer base {
   * {
     @apply border-border;
+    /* Prevent any element from causing horizontal scroll on mobile */
+    -webkit-tap-highlight-color: transparent;
   }
 
   html {
     scroll-behavior: smooth;
+    /* Better mobile text rendering + prevent iOS font-size inflation */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -42,6 +47,13 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     letter-spacing: -0.01em;
+    /* Prevent overscroll bounce and improve scroll feel on iOS */
+    overscroll-behavior-y: none;
+  }
+
+  /* Improve default form rendering on mobile */
+  input, textarea, select, button {
+    font-size: 16px; /* prevents iOS zoom on focus */
   }
 
   ::selection {
@@ -62,10 +74,27 @@
   .section-divider {
     @apply border-t border-stone-200/50;
   }
-  
+
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Hide scrollbar but allow scroll (used for marquee tracks and other horizontal scrollers) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Safe area for iOS notch/home indicator */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+}
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0rem);
 }
 
 ::-webkit-scrollbar {
@@ -87,14 +116,29 @@
 
 @layer utilities {
   .container-elegant {
-    @apply max-w-7xl mx-auto px-6 md:px-10;
+    @apply max-w-7xl mx-auto px-5 sm:px-6 md:px-10;
   }
-  
+
   .heading-display {
     @apply font-serif text-stone-900 tracking-tight;
   }
-  
+
   .text-muted-refined {
     @apply text-stone-500 leading-relaxed;
+  }
+
+  /* Touch target — 44px minimum on mobile for accessibility */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Better focus rings for keyboard nav */
+@layer base {
+  :focus-visible {
+    outline: 2px solid #292524;
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }

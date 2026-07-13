@@ -8,8 +8,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const pageData = await fetchPageData('/galeria', 'es');
 
   return {
-    title: 'Galeria | Valiente Studio Urody',
-    description: 'Prawdziwe efekty u prawdziwych klientek. Zobacz metamorfozy.',
+    title: 'Galeria | Beauty By Nat',
+    description: 'Prawdziwe efekty rzęs, brwi, fryzur i makijażu u klientek Beauty By Nat w Rokietnicy.',
   };
 }
 
@@ -19,8 +19,8 @@ export default async function GaleriaPage() {
     getProjects('es'),
   ]);
 
-  const pageTitle = pageData.content.find(c => c.section_key === 'page_title')?.content_value || 'Nasze realizacje';
-  const pageDescription = pageData.content.find(c => c.section_key === 'page_description')?.content_value || 'Prawdziwe efekty u prawdziwych klientek. Zobacz metamorfozy.';
+  const pageTitle = pageData.content.find(c => c.section_key === 'page_title')?.content_value || 'Realizacje Beauty By Nat';
+  const pageDescription = pageData.content.find(c => c.section_key === 'page_description')?.content_value || 'Zobacz efekty przedłużania rzęs, laminacji brwi, fryzur i makijażu u moich klientek.';
 
   const galleryImages = projects.length > 0
     ? projects.map((p: any) => ({

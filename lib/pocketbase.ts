@@ -6,7 +6,7 @@ export const pb = new PocketBase(PB_URL);
 
 pb.autoCancellation(false);
 
-export const DEFAULT_TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'valiente-estetica';
+export const DEFAULT_TENANT_ID = process.env.NEXT_PUBLIC_TENANT_ID || 'beauty-by-nat';
 
 export const TENANT_ID = DEFAULT_TENANT_ID;
 

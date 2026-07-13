@@ -13,18 +13,18 @@ export default function ContactSection({ pageData }: ContactSectionProps) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-100px' });
 
-  const phone = pageData?.settings?.phone || '+48 22 600 12 34';
-  const email = pageData?.settings?.email || 'hola@valientebelleza.com.pl';
-  const address = pageData?.settings?.address || 'ul. Mokotowska 12, 00-561 Warszawa';
-  const whatsapp = pageData?.settings?.whatsapp || '48226001234';
+  const phone = pageData?.settings?.phone || '+48 600 000 000';
+  const email = pageData?.settings?.email || 'nat@beautybynat.pl';
+  const address = pageData?.settings?.address || 'ul. Kasztanowa 1A, 62-090 Rokietnica';
+  const whatsapp = pageData?.settings?.whatsapp || '48600000000';
 
   const title = pageData
-    ? pageData.content.find(c => c.section_key === 'contact_title')?.content_value || 'Odwiedź nas w Warszawie'
-    : 'Odwiedź nas w Warszawie';
+    ? pageData.content.find(c => c.section_key === 'contact_title')?.content_value || 'Odwiedź Beauty By Nat w Rokietnicy'
+    : 'Odwiedź Beauty By Nat w Rokietnicy';
 
   return (
-    <section className="py-16 sm:py-20 md:py-24 bg-stone-50" data-section="contact">
-      <div ref={ref} className="max-w-7xl mx-auto px-6 sm:px-8 md:px-12">
+    <section className="py-14 sm:py-20 md:py-24 bg-stone-50" data-section="contact">
+      <div ref={ref} className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-20">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -43,7 +43,7 @@ export default function ContactSection({ pageData }: ContactSectionProps) {
                 { icon: MapPin, label: 'Adres', value: address },
                 { icon: Phone, label: 'Telefon', value: phone, href: `tel:+${phone.replace(/\D/g, '') }` },
                 { icon: Mail, label: 'E-mail', value: email, href: `mailto:${email}` },
-                { icon: Clock, label: 'Godziny', value: 'Pon - Pt: 9:00 - 20:00 · Sob: 9:00 - 14:00' },
+                { icon: Clock, label: 'Godziny', value: 'Pon - Pt: 9:00 - 20:00 · Sob: 9:00 - 16:00' },
               ].map(({ icon: Icon, label, value, href }) => (
                 <div key={label} className="flex items-start gap-4 sm:gap-5">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-xl flex items-center justify-center shrink-0 shadow-sm">
@@ -85,14 +85,14 @@ export default function ContactSection({ pageData }: ContactSectionProps) {
             className="rounded-2xl overflow-hidden shadow-xl h-[300px] sm:h-[350px] md:h-[400px] lg:h-auto"
           >
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2445.1234!2d21.0123!3d52.2156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTLCsDEyJzU2LjAiTiAyMcKwMDEnNDMuMyJF!5e0!3m2!1spl!2spl!4v1234567890"
+              src="https://www.google.com/maps?q=Kasztanowa+1A,+62-090+Rokietnica&output=embed"
               width="100%"
               height="100%"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Lokalizacja Valiente Studio Urody"
+              title="Lokalizacja Beauty By Nat — ul. Kasztanowa 1A, Rokietnica"
             />
           </motion.div>
         </div>
