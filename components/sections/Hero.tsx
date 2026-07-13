@@ -21,27 +21,24 @@ function HeroCarousel() {
 
   return (
     <div
-      className="relative aspect-[4/5] sm:aspect-[4/5] w-full overflow-hidden bg-stone-200"
+      className="relative aspect-[4/5] w-full overflow-hidden bg-stone-200 will-change-transform"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       {heroImages.map((img, i) => {
         const isActive = active === i;
-        // Each slide cycles: enter from below with zoom, hold, then exit upward
-        // to the next. We use key + animate so the entrance animation fires
-        // every time the slide becomes active.
         return (
           <motion.div
             key={img.src}
-            initial={{ opacity: 0, y: 60, scale: 1.12 }}
+            initial={false}
             animate={
               isActive
                 ? { opacity: 1, y: 0, scale: 1 }
-                : { opacity: 0, y: -40, scale: 1.05 }
+                : { opacity: 0, y: -24, scale: 1.04 }
             }
             transition={{
-              opacity: { duration: 1.1, ease: [0.22, 1, 0.36, 1] },
-              y: { duration: 1.6, ease: [0.22, 1, 0.36, 1] },
+              opacity: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+              y: { duration: 1.4, ease: [0.22, 1, 0.36, 1] },
               scale: { duration: SLIDE_DURATION / 1000, ease: 'linear' },
             }}
             className="absolute inset-0"
@@ -51,15 +48,16 @@ function HeroCarousel() {
               src={img.src}
               alt={img.alt}
               fill
-              priority={i === 0}
+              priority
+              loading={i === 0 ? 'eager' : 'lazy'}
               sizes="(min-width: 1280px) 440px, (min-width: 1024px) 400px, (min-width: 640px) 460px, 100vw"
               className="object-cover"
             />
             {/* Glow overlay on entrance — adds the "WOW" highlight */}
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: isActive ? 0.18 : 0 }}
-              transition={{ duration: 1.5, delay: 0.2 }}
+              transition={{ duration: 1.2, delay: 0.15 }}
               className="absolute inset-0 bg-gradient-to-tr from-rose-200/40 via-transparent to-amber-100/30 mix-blend-soft-light pointer-events-none"
             />
           </motion.div>
@@ -67,10 +65,10 @@ function HeroCarousel() {
       })}
 
       {/* Hairline corners sobrios */}
-      <div className="absolute top-3 left-3 w-6 h-px bg-white/70 z-10" />
-      <div className="absolute top-3 left-3 h-6 w-px bg-white/70 z-10" />
-      <div className="absolute bottom-3 right-3 w-6 h-px bg-white/70 z-10" />
-      <div className="absolute bottom-3 right-3 h-6 w-px bg-white/70 z-10" />
+      <div className="absolute top-3 left-3 w-6 h-px bg-white/70 z-10 pointer-events-none" />
+      <div className="absolute top-3 left-3 h-6 w-px bg-white/70 z-10 pointer-events-none" />
+      <div className="absolute bottom-3 right-3 w-6 h-px bg-white/70 z-10 pointer-events-none" />
+      <div className="absolute bottom-3 right-3 h-6 w-px bg-white/70 z-10 pointer-events-none" />
 
       {/* Indicadores de slide (puntitos) abajo a la izquierda */}
       <div className="absolute bottom-4 left-4 z-10 flex gap-1.5">
@@ -79,7 +77,7 @@ function HeroCarousel() {
             key={i}
             onClick={() => setActive(i)}
             aria-label={`Slide ${i + 1}`}
-            className={`h-1 rounded-full transition-all duration-500 ${
+            className={`h-1 rounded-full transition-all duration-500 touch-target ${
               active === i ? 'w-6 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
             }`}
           />

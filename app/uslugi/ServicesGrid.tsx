@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ServiceCard from '@/components/ui/ServiceCard';
 
 export interface FilterableService {
@@ -25,6 +26,9 @@ export const CATEGORIES = [
 
 export default function ServicesGrid({ services }: { services: FilterableService[] }) {
   const [active, setActive] = useState<string>('all');
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const counts = useMemo(() => {
     const map: Record<string, number> = { all: services.length };
@@ -38,11 +42,80 @@ export default function ServicesGrid({ services }: { services: FilterableService
     return services.filter((s) => active === 'all' || s.category === active);
   }, [services, active]);
 
+  // Update scroll indicators (mobile only)
+  const updateScrollIndicators = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  useEffect(() => {
+    updateScrollIndicators();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', updateScrollIndicators, { passive: true });
+    window.addEventListener('resize', updateScrollIndicators);
+    return () => {
+      el.removeEventListener('scroll', updateScrollIndicators);
+      window.removeEventListener('resize', updateScrollIndicators);
+    };
+  }, []);
+
+  // Scroll the chip into view when selected
+  const chipRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  useEffect(() => {
+    const btn = chipRefs.current[active];
+    if (btn && scrollRef.current) {
+      btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [active]);
+
+  const scrollBy = (delta: number) => {
+    scrollRef.current?.scrollBy({ left: delta, behavior: 'smooth' });
+  };
+
   return (
     <>
-      {/* Category chips — horizontal scroll en mobile, wrap en desktop */}
-      <div className="mb-6 sm:mb-8 -mx-5 sm:mx-0">
-        <div className="flex sm:flex-wrap gap-2 sm:gap-2.5 overflow-x-auto sm:overflow-x-visible no-scrollbar px-5 sm:px-0 pb-1">
+      {/* Category chips */}
+      <div className="relative mb-6 sm:mb-8 -mx-5 sm:mx-0">
+        {/* Mobile scroll arrows + fade gradients */}
+        <div className="sm:hidden">
+          {canScrollLeft && (
+            <button
+              type="button"
+              onClick={() => scrollBy(-120)}
+              aria-label="Przewiń filtry w lewo"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-stone-200 rounded-full shadow-md flex items-center justify-center active:scale-95 transition-transform"
+            >
+              <ChevronLeft className="w-4 h-4 text-stone-700" />
+            </button>
+          )}
+          {canScrollRight && (
+            <button
+              type="button"
+              onClick={() => scrollBy(120)}
+              aria-label="Przewiń filtry w prawo"
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-stone-200 rounded-full shadow-md flex items-center justify-center active:scale-95 transition-transform"
+            >
+              <ChevronRight className="w-4 h-4 text-stone-700" />
+            </button>
+          )}
+
+          {/* Left edge fade */}
+          {canScrollLeft && (
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-10 bg-gradient-to-r from-white to-transparent z-[1]" />
+          )}
+          {/* Right edge fade */}
+          {canScrollRight && (
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-white to-transparent z-[1]" />
+          )}
+        </div>
+
+        <div
+          ref={scrollRef}
+          className="flex sm:flex-wrap gap-2 sm:gap-2.5 overflow-x-auto sm:overflow-x-visible no-scrollbar px-5 sm:px-0 py-1"
+        >
           {CATEGORIES.map((cat) => {
             const isActive = active === cat.id;
             const count = counts[cat.id] || 0;
@@ -50,17 +123,18 @@ export default function ServicesGrid({ services }: { services: FilterableService
             return (
               <button
                 key={cat.id}
+                ref={(el) => { chipRefs.current[cat.id] = el; }}
                 onClick={() => !disabled && setActive(cat.id)}
                 disabled={disabled}
-                className={`group shrink-0 sm:shrink inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 sm:py-2.5 rounded-full text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 touch-target ${
+                className={`group shrink-0 sm:shrink inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-full text-xs sm:text-sm font-medium tracking-wide transition-all duration-200 touch-target ${
                   isActive
-                    ? 'bg-stone-900 text-white shadow-md'
+                    ? 'bg-stone-900 text-white shadow-md scale-[1.02]'
                     : disabled
                     ? 'bg-stone-50 text-stone-300 cursor-not-allowed'
-                    : 'bg-white text-stone-700 hover:bg-stone-100 hover:text-stone-900 border border-stone-200 hover:border-stone-300'
+                    : 'bg-white text-stone-700 hover:bg-stone-100 hover:text-stone-900 border border-stone-200 hover:border-stone-300 active:scale-95'
                 }`}
               >
-                <span>{cat.label}</span>
+                <span className="whitespace-nowrap">{cat.label}</span>
                 <span
                   className={`inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[10px] sm:text-xs font-semibold rounded-full transition-colors ${
                     isActive
@@ -86,7 +160,7 @@ export default function ServicesGrid({ services }: { services: FilterableService
         {active !== 'all' && (
           <button
             onClick={() => setActive('all')}
-            className="text-stone-500 hover:text-stone-900 transition-colors"
+            className="text-stone-500 hover:text-stone-900 transition-colors touch-target"
           >
             Wyczyść filtry
           </button>
@@ -97,10 +171,10 @@ export default function ServicesGrid({ services }: { services: FilterableService
       <AnimatePresence mode="wait">
         <motion.div
           key={active}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
           {filtered.length === 0 ? (
             <div className="py-16 sm:py-20 text-center">
