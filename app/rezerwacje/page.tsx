@@ -77,6 +77,7 @@ function BookingPageInner() {
   const [step, setStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [selectedService, setSelectedService] = useState<{name: string, price: number, duration: string} | null>(null);
   const [form, setForm] = useState({
     date: '', time: '', name: '', phone: ''
