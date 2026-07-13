@@ -1,60 +1,74 @@
 import { NextResponse } from 'next/server';
-import { MercadoPagoConfig, Payment } from 'mercadopago';
+import Stripe from 'stripe';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    const { 
-      name, 
-      phone, 
-      date, 
-      time, 
+
+    const {
+      name,
+      phone,
+      email,
+      date,
+      time,
       serviceName,
       servicePrice,
-      serviceDuration 
+      serviceDuration,
     } = body;
 
-    const accessToken = process.env.MERCADOPAGO_ACCESS_TOKEN;
-    
-    if (!accessToken) {
-      return NextResponse.json({ error: 'MercadoPago no configurado' }, { status: 500 });
+    const stripeSecret = process.env.STRIPE_SECRET_KEY;
+
+    if (!stripeSecret) {
+      // Modo dev: simular éxito de pago sin Stripe configurado
+      return NextResponse.json({
+        status: 'pending',
+        init_point: null,
+        simulated: true,
+      });
     }
 
-    const client = new MercadoPagoConfig({ accessToken });
-    const payment = new Payment(client);
+    const stripe = new Stripe(stripeSecret, { apiVersion: '2024-06-20' });
 
-    const paymentData = {
-      transaction_amount: servicePrice,
-      description: `Reserva: ${serviceName} - ${date} ${time}`,
-      payment_method_id: 'mercadopago',
-      payer: {
-        email: `cliente_${phone}@valiente.com`,
-        first_name: name.split(' ')[0],
-        last_name: name.split(' ').slice(1).join(' ') || '',
-      },
+    const amountInGrosz = Math.round(Number(servicePrice) * 100); // PLN zł → grosze
+    const successUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/rezerwacje?payment=success&session={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/rezerwacje?payment=cancel`;
+
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      payment_method_types: ['card', 'p24', 'blik'], // tarjeta + Przelewy24 + BLIK (Polonia)
+      customer_email: email || undefined,
+      line_items: [
+        {
+          quantity: 1,
+          price_data: {
+            currency: 'pln',
+            unit_amount: amountInGrosz,
+            product_data: {
+              name: `Rezerwacja: ${serviceName}`,
+              description: `${date} ${time} (${serviceDuration})`,
+            },
+          },
+        },
+      ],
       metadata: {
+        tipo: 'booking',
         nombre: name,
         telefono: phone,
         fecha: date,
         hora: time,
         servicio: serviceName,
-        precio: servicePrice,
+        precio: String(servicePrice),
         duracion: serviceDuration,
       },
-    };
+      success_url: successUrl,
+      cancel_url: cancelUrl,
+      locale: 'pl',
+    });
 
-    const result = await payment.create({ body: paymentData });
-
-    if (result.status === 'pending' || result.status === 'approved') {
-      return NextResponse.json({
-        status: result.status,
-        init_point: result.point_of_interaction?.transaction_data?.ticket_url || `https://www.mercadopago.com.ar/checkout/v1/payment-screen/${result.id}`,
-      });
-    }
-
-    return NextResponse.json({ error: 'Error al crear el pago' }, { status: 500 });
-
+    return NextResponse.json({
+      status: 'pending',
+      init_point: session.url,
+    });
   } catch (error) {
     console.error('Error:', error);
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 });

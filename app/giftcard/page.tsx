@@ -546,7 +546,7 @@ function GiftCardPageInner() {
                     </div>
 
                     <p className="text-xs text-stone-400 text-center mt-4">
-                      Płatność obsługiwana przez Mercado Pago. Wysyłając formularz, akceptujesz kontakt w sprawie zamówienia.
+                      Płatność obsługiwana przez Stripe (karta, BLIK, Przelewy24). Wysyłając formularz, akceptujesz kontakt w sprawie zamówienia.
                     </p>
                   </motion.form>
                 )}
