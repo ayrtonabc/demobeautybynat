@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, Suspense } from 'react';
+import Link from 'next/link';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, CheckCircle, CreditCard, Phone } from 'lucide-react';

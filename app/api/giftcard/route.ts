@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const stripe = new Stripe(stripeSecret, { apiVersion: '2024-06-20' });
+    const stripe = new Stripe(stripeSecret, { apiVersion: '2023-10-16' });
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     const session = await stripe.checkout.sessions.create({
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
             unit_amount: precioCentavos,
             product_data: {
               name: 'Gift Card Beauty By Nat',
-              description,
+              description: descripcion,
             },
           },
         },

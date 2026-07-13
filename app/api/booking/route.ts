@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const stripe = new Stripe(stripeSecret, { apiVersion: '2024-06-20' });
+    const stripe = new Stripe(stripeSecret, { apiVersion: '2023-10-16' });
 
     const amountInGrosz = Math.round(Number(servicePrice) * 100); // PLN zł → grosze
     const successUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/rezerwacje?payment=success&session={CHECKOUT_SESSION_ID}`;
