@@ -7,14 +7,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 sm:px-6 md:px-10 py-10 sm:py-12 md:py-16 safe-bottom">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 md:gap-12">
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-4 sm:gap-5 mb-6">
-              <Link href="/" className="inline-block shrink-0">
-                <img src="/logo.webp" alt="Beauty By Nat" className="h-12 sm:h-16 w-auto brightness-0 invert" />
-              </Link>
-              <p className="text-stone-400 text-sm leading-relaxed">
-                Rzęsy, brwi, fryzury i makijaż w Rokietnicy k. Poznania. Naturalnie · Glam · Okolicznościowo.
-              </p>
-            </div>
+            <Link href="/" className="inline-block mb-4">
+              <img src="/logo.webp" alt="Beauty By Nat" className="h-12 sm:h-16 w-auto brightness-0 invert" />
+            </Link>
+            <p className="text-stone-400 text-sm leading-relaxed mb-6">
+              Rzęsy, brwi, fryzury i makijaż w Rokietnicy k. Poznania. Naturalnie · Glam · Okolicznościowo.
+            </p>
             <div className="flex flex-wrap gap-3 sm:gap-3">
               {/* Instagram */}
               <a
