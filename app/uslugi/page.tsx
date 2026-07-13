@@ -40,16 +40,6 @@ function pickImage(i: number, category?: string): string {
   return demoImages[i % demoImages.length];
 }
 
-// Categorías para los filtros de la UI
-export const CATEGORIES = [
-  { id: 'all', label: 'Wszystkie' },
-  { id: 'rzęsy', label: 'Rzęsy' },
-  { id: 'brwi', label: 'Brwi' },
-  { id: 'fryzury', label: 'Fryzury' },
-  { id: 'makijaż', label: 'Makijaż' },
-  { id: 'szkolenia', label: 'Szkolenia' },
-] as const;
-
 const defaultServices = [
   // Rzęsy
   {
